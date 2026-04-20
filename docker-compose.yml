@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_trailtrack
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: das123
+      MYSQL_DATABASE: trailtrack
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_trailtrack
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: das123
+    depends_on:
+      - mysql
+
+  php:
+    build: .
+    container_name: php_trailtrack
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./php:/var/www/html
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
